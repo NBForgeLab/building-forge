@@ -1,0 +1,72 @@
+/* Panel styling improvements */
+.dockview-container {
+  --dockview-background-color: #ffffff;
+  --dockview-border-color: #e5e7eb;
+  --dockview-tab-background: #f9fafb;
+  --dockview-tab-active-background: #ffffff;
+  --dockview-tab-text-color: #374151;
+  --dockview-tab-active-text-color: #111827;
+}
+
+.dockview-theme-dark {
+  --dockview-background-color: #111827;
+  --dockview-border-color: #374151;
+  --dockview-tab-background: #1f2937;
+  --dockview-tab-active-background: #111827;
+  --dockview-tab-text-color: #d1d5db;
+  --dockview-tab-active-text-color: #f9fafb;
+}
+
+/* Panel content styling */
+.panel-content {
+  background: var(--dockview-background-color);
+  border: 1px solid var(--dockview-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.panel-header {
+  background: var(--dockview-tab-background);
+  border-bottom: 1px solid var(--dockview-border-color);
+  padding: 12px 16px;
+}
+
+.panel-title {
+  color: var(--dockview-tab-active-text-color);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.panel-subtitle {
+  color: var(--dockview-tab-text-color);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Improve scrollbars */
+.panel-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.panel-content::-webkit-scrollbar-track {
+  background: var(--dockview-tab-background);
+}
+
+.panel-content::-webkit-scrollbar-thumb {
+  background: var(--dockview-border-color);
+  border-radius: 4px;
+}
+
+.panel-content::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dark theme scrollbar */
+.dockview-theme-dark .panel-content::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dockview-theme-dark .panel-content::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}

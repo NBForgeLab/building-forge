@@ -1,0 +1,151 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to build'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm run test:all
+
+      - name: Build application
+        run: npm run build
+
+      - name: Build production (Windows)
+        if: matrix.os == 'windows-latest'
+        run: node scripts/build-production.js --platform win32 --skip-signing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build production (macOS)
+        if: matrix.os == 'macos-latest'
+        run: node scripts/build-production.js --platform darwin --skip-signing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build production (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: node scripts/build-production.js --platform linux --skip-signing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate checksums
+        run: node scripts/code-signing.js checksums
+
+      - name: Upload artifacts (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: |
+            release/*.exe
+            release/*.zip
+            release/checksums.sha256
+
+      - name: Upload artifacts (macOS)
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: |
+            release/*.dmg
+            release/*.zip
+            release/checksums.sha256
+
+      - name: Upload artifacts (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: |
+            release/*.AppImage
+            release/*.deb
+            release/*.rpm
+            release/*.tar.gz
+            release/checksums.sha256
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          find artifacts -type f \( -name "*.exe" -o -name "*.dmg" -o -name "*.AppImage" -o -name "*.deb" -o -name "*.rpm" -o -name "*.zip" -o -name "*.tar.gz" -o -name "checksums.sha256" \) -exec cp {} release-files/ \;
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: release-files/*
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          body: |
+            ## Building Forge ${{ github.ref_name }}
+
+            ### التحميلات
+
+            **Windows:**
+            - `Building-Forge-Setup-*.exe` - مثبت Windows (مُوصى به)
+            - `Building-Forge-*-win.zip` - نسخة محمولة
+
+            **macOS:**
+            - `Building-Forge-*.dmg` - مثبت macOS
+
+            **Linux:**
+            - `Building-Forge-*.AppImage` - تطبيق محمول (مُوصى به)
+            - `Building-Forge-*.deb` - حزمة Debian/Ubuntu
+            - `Building-Forge-*.rpm` - حزمة Red Hat/Fedora
+            - `Building-Forge-*.tar.gz` - أرشيف مضغوط
+
+            ### التحقق من سلامة الملفات
+            استخدم ملف `checksums.sha256` للتحقق من سلامة الملفات المحملة.
+
+            ### متطلبات النظام
+            - **Windows:** Windows 7 أو أحدث (64-bit)
+            - **macOS:** macOS 10.14 أو أحدث
+            - **Linux:** توزيعة حديثة مع دعم OpenGL
+
+            ### الميزات الجديدة
+            - تحسينات في الأداء
+            - إصلاح الأخطاء
+            - واجهة مستخدم محسنة
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

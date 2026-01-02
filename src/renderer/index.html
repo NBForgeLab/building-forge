@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: blob: https:; font-src 'self' data: https: blob:; connect-src 'self' https: wss: ws:;"
+    />
+    <title>Building Forge</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Emergency CSS Fallback -->
+    <link rel="stylesheet" href="./emergency-styles.css" />
+
+    <!-- Tailwind Configuration -->
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+            },
+          },
+        },
+      }
+    </script>
+
+    <!-- Custom CSS for RTL and additional styling -->
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        direction: rtl;
+        margin: 0;
+        padding: 0;
+        background-color: #f9fafb;
+      }
+
+      #root {
+        height: 100vh;
+        width: 100vw;
+      }
+
+      /* Ensure Tailwind classes work */
+      .bg-white {
+        background-color: #ffffff !important;
+      }
+      .bg-gray-50 {
+        background-color: #f9fafb !important;
+      }
+      .bg-gray-100 {
+        background-color: #f3f4f6 !important;
+      }
+      .bg-gray-800 {
+        background-color: #1f2937 !important;
+      }
+      .bg-gray-900 {
+        background-color: #111827 !important;
+      }
+      .text-white {
+        color: #ffffff !important;
+      }
+      .text-gray-900 {
+        color: #111827 !important;
+      }
+      .text-gray-600 {
+        color: #4b5563 !important;
+      }
+      .text-gray-400 {
+        color: #9ca3af !important;
+      }
+      .border {
+        border-width: 1px !important;
+      }
+      .border-gray-200 {
+        border-color: #e5e7eb !important;
+      }
+      .border-gray-700 {
+        border-color: #374151 !important;
+      }
+      .rounded {
+        border-radius: 0.25rem !important;
+      }
+      .rounded-lg {
+        border-radius: 0.5rem !important;
+      }
+      .p-4 {
+        padding: 1rem !important;
+      }
+      .px-3 {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+      }
+      .py-2 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 0.5rem !important;
+      }
+      .mb-2 {
+        margin-bottom: 0.5rem !important;
+      }
+      .mb-3 {
+        margin-bottom: 0.75rem !important;
+      }
+      .mb-4 {
+        margin-bottom: 1rem !important;
+      }
+      .flex {
+        display: flex !important;
+      }
+      .flex-col {
+        flex-direction: column !important;
+      }
+      .items-center {
+        align-items: center !important;
+      }
+      .justify-center {
+        justify-content: center !important;
+      }
+      .justify-between {
+        justify-content: space-between !important;
+      }
+      .w-full {
+        width: 100% !important;
+      }
+      .h-full {
+        height: 100% !important;
+      }
+      .h-screen {
+        height: 100vh !important;
+      }
+      .text-sm {
+        font-size: 0.875rem !important;
+      }
+      .text-lg {
+        font-size: 1.125rem !important;
+      }
+      .font-medium {
+        font-weight: 500 !important;
+      }
+      .font-semibold {
+        font-weight: 600 !important;
+      }
+      .space-y-2 > * + * {
+        margin-top: 0.5rem !important;
+      }
+      .space-y-4 > * + * {
+        margin-top: 1rem !important;
+      }
+      .hover\\:bg-gray-200:hover {
+        background-color: #e5e7eb !important;
+      }
+      .hover\\:bg-gray-700:hover {
+        background-color: #374151 !important;
+      }
+      .transition-colors {
+        transition-property: color, background-color, border-color !important;
+      }
+      .cursor-pointer {
+        cursor: pointer !important;
+      }
+
+      /* Dark mode */
+      .dark .bg-gray-900 {
+        background-color: #111827 !important;
+      }
+      .dark .bg-gray-800 {
+        background-color: #1f2937 !important;
+      }
+      .dark .bg-gray-700 {
+        background-color: #374151 !important;
+      }
+      .dark .text-white {
+        color: #ffffff !important;
+      }
+      .dark .text-gray-300 {
+        color: #d1d5db !important;
+      }
+      .dark .text-gray-400 {
+        color: #9ca3af !important;
+      }
+      .dark .border-gray-700 {
+        border-color: #374151 !important;
+      }
+      .dark .border-gray-600 {
+        border-color: #4b5563 !important;
+      }
+
+      /* Dockview styling */
+      .dockview-container {
+        --dockview-background-color: #ffffff;
+        --dockview-border-color: #e5e7eb;
+        --dockview-tab-background: #f9fafb;
+        --dockview-tab-active-background: #ffffff;
+        --dockview-tab-text-color: #374151;
+        --dockview-tab-active-text-color: #111827;
+      }
+
+      .dockview-theme-dark {
+        --dockview-background-color: #111827;
+        --dockview-border-color: #374151;
+        --dockview-tab-background: #1f2937;
+        --dockview-tab-active-background: #111827;
+        --dockview-tab-text-color: #d1d5db;
+        --dockview-tab-active-text-color: #f9fafb;
+      }
+
+      /* Fix for RTL layout */
+      .dockview-container * {
+        direction: ltr;
+      }
+
+      /* Arabic text should be RTL */
+      .arabic-text,
+      [lang='ar'] {
+        direction: rtl;
+        text-align: right;
+      }
+
+      /* Button styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+      }
+
+      .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #2563eb;
+      }
+
+      .btn-ghost {
+        background-color: transparent;
+        color: #374151;
+      }
+
+      .btn-ghost:hover {
+        background-color: #f3f4f6;
+      }
+
+      .dark .btn-ghost {
+        color: #d1d5db;
+      }
+
+      .dark .btn-ghost:hover {
+        background-color: #374151;
+      }
+
+      /* Loading animation */
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .animate-spin {
+        animation: spin 1s linear infinite;
+      }
+
+      /* Panel content */
+      .panel-content {
+        background: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        height: 100%;
+        overflow: auto;
+      }
+
+      .dark .panel-content {
+        background: #1f2937;
+        border-color: #374151;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900">
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

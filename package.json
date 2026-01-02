@@ -1,0 +1,279 @@
+{
+  "name": "building-forge",
+  "version": "1.0.0",
+  "description": "أداة تصميم المباني ثلاثية الأبعاد المحسنة للألعاب",
+  "main": "dist/main/main.js",
+  "author": "Building Forge Team",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.js",
+    "dev:main": "vite build --config vite.main.config.ts --mode development --watch",
+    "dev:renderer": "vite --config vite.renderer.config.ts",
+    "dev:electron": "wait-on http://localhost:5173 && electron dist/main/main.js --dev",
+    "build": "npm run build:main && npm run build:renderer",
+    "build:main": "vite build --config vite.main.config.ts",
+    "build:renderer": "vite build --config vite.renderer.config.ts",
+    "dist": "npm run build && electron-builder",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "build:production": "node scripts/build-production.js",
+    "build:production:win": "node scripts/build-production.js --platform win32",
+    "build:production:mac": "node scripts/build-production.js --platform darwin",
+    "build:production:linux": "node scripts/build-production.js --platform linux",
+    "build:all": "node scripts/build-all-platforms.js",
+    "build:all:skip-tests": "node scripts/build-all-platforms.js --skip-tests",
+    "release": "node scripts/release.js",
+    "release:quick": "node scripts/release.js --skip-tests --skip-signing",
+    "sign": "node scripts/code-signing.js sign",
+    "sign:checksums": "node scripts/code-signing.js checksums",
+    "sign:validate": "node scripts/code-signing.js validate",
+    "sign:report": "node scripts/code-signing.js report",
+    "test:installers": "node scripts/test-installers.js",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "test:all": "node scripts/test-runner.js all",
+    "test:unit": "node scripts/test-runner.js unit",
+    "test:property": "node scripts/test-runner.js property",
+    "test:performance": "node scripts/test-runner.js performance",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "lint:check": "node scripts/test-runner.js lint",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css,md}\"",
+    "typecheck": "tsc --noEmit",
+    "typecheck:watch": "tsc --noEmit --watch",
+    "setup": "node scripts/dev-setup.js",
+    "clean": "rimraf dist release coverage .nyc_output",
+    "electron": "electron dist/main/main.js",
+    "start": "npm run build && electron dist/main/main.js",
+    "postinstall": "npm run setup"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.88.17",
+    "@react-three/fiber": "^8.15.11",
+    "@tailwindcss/forms": "^0.5.11",
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.23",
+    "clsx": "^2.1.1",
+    "dockview": "^1.12.0",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.6.2",
+    "immer": "^10.0.3",
+    "pako": "^2.1.0",
+    "postcss": "^8.5.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss": "^4.1.18",
+    "three": "^0.158.0",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/user-event": "^14.5.1",
+    "@types/jsdom": "^27.0.0",
+    "@types/node": "^20.10.4",
+    "@types/pako": "^2.0.3",
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@types/three": "^0.158.3",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "@vitest/coverage-v8": "^1.0.4",
+    "@vitest/ui": "^1.0.4",
+    "concurrently": "^8.2.2",
+    "electron": "^28.1.0",
+    "electron-builder": "^24.9.1",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "fast-check": "^3.23.2",
+    "jsdom": "^23.2.0",
+    "prettier": "^3.1.1",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vite-plugin-electron": "^0.28.1",
+    "vitest": "^1.0.4",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.buildingforge.app",
+    "productName": "Building Forge",
+    "copyright": "Copyright © 2026 Building Forge Team",
+    "directories": {
+      "output": "release",
+      "buildResources": "resources"
+    },
+    "files": [
+      "dist/**/*",
+      "resources/**/*",
+      "package.json",
+      "!**/*.map",
+      "!**/*.ts",
+      "!**/node_modules/**/*",
+      "!src/**/*",
+      "!tests/**/*",
+      "!scripts/**/*",
+      "!coverage/**/*",
+      "!logs/**/*",
+      "!temp/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources"
+      }
+    ],
+    "compression": "maximum",
+    "removePackageScripts": true,
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.ico",
+      "publisherName": "Building Forge Team",
+      "verifyUpdateCodeSignature": false,
+      "certificateFile": "WIN_CERTIFICATE_PATH",
+      "certificatePassword": "WIN_CERTIFICATE_PASSWORD",
+      "signingHashAlgorithms": [
+        "sha256"
+      ],
+      "timeStampServer": "http://timestamp.digicert.com",
+      "rfc3161TimeStampServer": "http://timestamp.digicert.com"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.icns",
+      "category": "public.app-category.graphics-design",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "resources/entitlements.mac.plist",
+      "entitlementsInherit": "resources/entitlements.mac.plist",
+      "notarize": {
+        "teamId": "MAC_TEAM_ID"
+      }
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "resources/icon.png",
+      "category": "Graphics",
+      "synopsis": "أداة تصميم المباني ثلاثية الأبعاد المحسنة للألعاب",
+      "description": "Building Forge هو تطبيق مكتبي متقدم لتصميم المباني ثلاثية الأبعاد المحسنة للألعاب. يوفر أدوات احترافية لإنشاء وتحرير المباني مع دعم كامل للتصدير إلى محركات الألعاب المختلفة.",
+      "desktop": {
+        "Name": "Building Forge",
+        "Comment": "أداة تصميم المباني ثلاثية الأبعاد",
+        "Keywords": "3D;Building;Design;Game;Architecture;Modeling",
+        "Categories": "Graphics;3DGraphics;Engineering"
+      }
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "allowElevation": true,
+      "installerIcon": "resources/icon.ico",
+      "uninstallerIcon": "resources/icon.ico",
+      "installerHeaderIcon": "resources/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Building Forge",
+      "include": "resources/installer.nsh",
+      "artifactName": "${productName}-Setup-${version}.${ext}",
+      "deleteAppDataOnUninstall": false
+    },
+    "dmg": {
+      "title": "${productName} ${version}",
+      "icon": "resources/icon.icns",
+      "iconSize": 100,
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ],
+      "window": {
+        "width": 540,
+        "height": 380
+      },
+      "backgroundColor": "#ffffff",
+      "artifactName": "${productName}-${version}.${ext}"
+    },
+    "deb": {
+      "priority": "optional",
+      "afterInstall": "resources/linux-after-install.sh",
+      "afterRemove": "resources/linux-after-remove.sh"
+    },
+    "rpm": {
+      "afterInstall": "resources/linux-after-install.sh",
+      "afterRemove": "resources/linux-after-remove.sh"
+    },
+    "appImage": {
+      "artifactName": "${productName}-${version}.${ext}"
+    }
+  }
+}

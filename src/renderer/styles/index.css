@@ -1,0 +1,256 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family:
+      -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent scrolling in desktop app */
+  }
+
+  #root {
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+/* Theme variables */
+:root {
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-secondary: #6b7280;
+  --color-secondary-hover: #4b5563;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-info: #06b6d4;
+
+  /* Material Editor Variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f9fafb;
+  --bg-tertiary: #f3f4f6;
+  --bg-hover: #f1f5f9;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --border-color: #e5e7eb;
+  --accent-color: #3b82f6;
+  --accent-color-hover: #2563eb;
+  --success-color: #10b981;
+  --font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+[data-theme='dark'] {
+  --color-primary: #60a5fa;
+  --color-primary-hover: #3b82f6;
+  --color-secondary: #9ca3af;
+  --color-secondary-hover: #d1d5db;
+
+  /* Material Editor Dark Variables */
+  --bg-primary: #1f2937;
+  --bg-secondary: #111827;
+  --bg-tertiary: #374151;
+  --bg-hover: #4b5563;
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --border-color: #4b5563;
+  --accent-color: #60a5fa;
+  --accent-color-hover: #3b82f6;
+  --success-color: #34d399;
+}
+
+/* Error Boundary Styles */
+.error-boundary {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
+  padding: 2rem;
+}
+
+[data-theme='dark'] .error-boundary {
+  background-color: #111827;
+}
+
+.error-container {
+  max-width: 600px;
+  text-align: center;
+  background: white;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme='dark'] .error-container {
+  background: #1f2937;
+  color: white;
+}
+
+.error-details {
+  margin: 1rem 0;
+  text-align: left;
+  background: #f3f4f6;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+[data-theme='dark'] .error-details {
+  background: #374151;
+  border-color: #4b5563;
+}
+
+.error-details pre {
+  margin: 0;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.retry-button {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.retry-button:hover {
+  background: var(--color-primary-hover);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Dockview Theme Customization */
+.dockview-theme-light {
+  --dv-activegroup-visiblepanel-tab-background-color: #ffffff;
+  --dv-activegroup-visiblepanel-tab-color: #1f2937;
+  --dv-group-view-background-color: #f9fafb;
+  --dv-tabs-and-actions-container-background-color: #f3f4f6;
+  --dv-tab-background-color: #e5e7eb;
+  --dv-tab-color: #6b7280;
+  --dv-tab-border-color: #d1d5db;
+  --dv-separator-border: #d1d5db;
+  --dv-paneview-outline: #3b82f6;
+}
+
+.dockview-theme-dark {
+  --dv-activegroup-visiblepanel-tab-background-color: #1f2937;
+  --dv-activegroup-visiblepanel-tab-color: #f9fafb;
+  --dv-group-view-background-color: #111827;
+  --dv-tabs-and-actions-container-background-color: #374151;
+  --dv-tab-background-color: #4b5563;
+  --dv-tab-color: #d1d5db;
+  --dv-tab-border-color: #6b7280;
+  --dv-separator-border: #4b5563;
+  --dv-paneview-outline: #60a5fa;
+}
+
+/* Dockview panel content styling */
+.dockview-theme-light .dv-panel-content,
+.dockview-theme-dark .dv-panel-content {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Ensure panels fill their containers */
+.dockview-theme-light .dv-panel,
+.dockview-theme-dark .dv-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Custom styling for panel headers */
+.dockview-theme-light .dv-tab {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.dockview-theme-dark .dv-tab {
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+/* Hover effects for tabs */
+.dockview-theme-light .dv-tab:hover {
+  background-color: #f3f4f6;
+}
+
+.dockview-theme-dark .dv-tab:hover {
+  background-color: #4b5563;
+}
+
+/* Active tab styling */
+.dockview-theme-light .dv-tab.dv-active {
+  background-color: #ffffff;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.dockview-theme-dark .dv-tab.dv-active {
+  background-color: #1f2937;
+  border-bottom: 2px solid #60a5fa;
+}
+
+/* Splitter styling */
+.dockview-theme-light .dv-split-view > .dv-sash,
+.dockview-theme-dark .dv-split-view > .dv-sash {
+  background-color: transparent;
+}
+
+.dockview-theme-light .dv-split-view > .dv-sash:hover,
+.dockview-theme-dark .dv-split-view > .dv-sash:hover {
+  background-color: var(--dv-paneview-outline);
+}

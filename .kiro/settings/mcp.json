@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+      "autoApprove": ["sequentialthinking"],
+      "disabled": false
+    },
+    "Context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp", "--api-key", "ctx7sk-054367ac-6374-45ce-9d19-ec1b11a2c7f0"],
+      "env": {},
+      "disabled": false,
+      "autoApprove": ["get-library-docs", "resolve-library-id"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "autoApprove": [
+        "browser_take_screenshot",
+        "browser_click",
+        "browser_select_option",
+        "browser_press_key",
+        "browser_navigate",
+        "browser_drag",
+        "browser_hover",
+        "browser_evaluate",
+        "browser_snapshot",
+        "browser_run_code",
+        "browser_console_messages",
+        "browser_close"
+      ]
+    }
+  }
+}
